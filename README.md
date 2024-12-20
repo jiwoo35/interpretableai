@@ -1,4 +1,4 @@
-# Interpretable AI
-# Ajay Thampi
+### Interpretable AI
+### Ajay Thampi
 
-# Ch2.~
+#### Ch2.~
