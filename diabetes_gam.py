@@ -55,3 +55,33 @@ y_pred=gam.predict(X_test)
 mae=np.mean(np.abs(y_test-y_pred))
 
 print(mae)
+
+# GAM 해석 (1)
+grid_locs1=[(0,0),(0,1),(1,0),(1,1)] # 2*2 4개 그래프 위치
+fig, ax = plt.subplots(2, 2, figsize=(10,8)) # 2*2
+selected_features = list(feature_rename.values())[:4] # 4가지 환자 메타데이터 특성 추출
+for i, feature in enumerate(selected_features): # 반복 처리
+	gl = grid_locs1[i]
+	XX = gam.generate_X_grid(term=i) # 목표에 나머지 특성이 미치는 영향을 제외했을 때 특성 값에 대한 부분 의존성 생성
+	ax[gl[0], gl[1]].plot(XX[:, i], gam.partial_dependence(term=i, X=XX)) # 부분 의존성 값을 실선으로 표시
+	ax[gl[0], gl[1]].plot(XX[:, i], gam.partial_dependence(term=i, X=XX, width=.95)[1], c='r', ls='--') # 부분 의존성 값을 기준으로 95% 신뢰도 구간을 점선으로 표시
+	ax[gl[0], gl[1]].set_xlabel('%s' % feature)
+	ax[gl[0], gl[1]].set_ylabel('f(%s)' % feature)
+	
+#plt.show()
+
+# GAM 해석 (2)
+grid_locs2=[(0,0),(0,1),(1,0),(1,1),(2,0),(2,1)] # 3*2 6개 그래프 위치
+fig2, ax2 = plt.subplots(3, 2, figsize=(12,12)) # 3*2
+selected_features2 = list(feature_rename.values())[4:] # 6가지 환자 메타데이터 특성 추출
+
+for i, feature in enumerate(selected_features2): # 반복 처리
+	idx = i+4
+	gl = grid_locs2[i]
+	XX = gam.generate_X_grid(term=idx) # 목표에 나머지 특성이 미치는 영향을 제외했을 때 특성 값에 대한 부분 의존성 생성
+	ax2[gl[0], gl[1]].plot(XX[:, idx], gam.partial_dependence(term=idx, X=XX)) # 부분 의존성 값을 실선으로 표시
+	ax2[gl[0], gl[1]].plot(XX[:, idx], gam.partial_dependence(term=idx, X=XX, width=.95)[1], c='r', ls='--') # 부분 의존성 값을 기준으로 95% 신뢰도 구간을 점선으로 표시
+	ax2[gl[0], gl[1]].set_xlabel('%s' % feature)
+	ax2[gl[0], gl[1]].set_ylabel('f(%s)' % feature)
+
+plt.show()
